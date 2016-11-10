@@ -72,10 +72,7 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
         mSimpleExoPlayerView.setPlayer(mExoPlayer);
         preparePlayer();
 
-        if (mActivity instanceof MainActivity) {
-            mCastSession = ((MainActivity) mActivity).getCastSession();
-            mSessionManager = ((MainActivity) mActivity).getSessionManager();
-        }
+        updateCastSesssionAndSessionManager();
     }
 
     private void initPlayer() {
@@ -154,11 +151,20 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
         mExoPlayer.setPlayWhenReady(false);
     }
 
+    private void updateCastSesssionAndSessionManager() {
+        if (mActivity instanceof MainActivity) {
+            mCastSession = ((MainActivity) mActivity).getCastSession();
+            mSessionManager = ((MainActivity) mActivity).getSessionManager();
+        }
+    }
+
     public void onCastClick(View view) {
         loadRemoteMedia(0, true);
     }
 
     private void loadRemoteMedia(int position, boolean autoPlay) {
+        updateCastSesssionAndSessionManager();
+        
         if (mCastSession == null) {
             mCastSession = mSessionManager.getCurrentCastSession();
         }
