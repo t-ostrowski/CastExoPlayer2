@@ -29,8 +29,16 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.google.android.gms.cast.MediaInfo;
+import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.cast.framework.CastSession;
+import com.google.android.gms.cast.framework.SessionManager;
+import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.ostro.castexoplayer2.BR;
 import com.ostro.castexoplayer2.R;
+import com.ostro.castexoplayer2.ui.MainActivity;
+
+import timber.log.Timber;
 
 /**
  * Created by Thomas Ostrowski
@@ -46,6 +54,9 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
     private ObservableBoolean controlsVisible = new ObservableBoolean(true);
     private boolean mPausable = true;
 
+    private CastSession mCastSession;
+    private SessionManager mSessionManager;
+
     private SimpleExoPlayerView mSimpleExoPlayerView;
     private SimpleExoPlayer mExoPlayer;
 
@@ -60,6 +71,11 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
         initPlayer();
         mSimpleExoPlayerView.setPlayer(mExoPlayer);
         preparePlayer();
+
+        if (mActivity instanceof MainActivity) {
+            mCastSession = ((MainActivity) mActivity).getCastSession();
+            mSessionManager = ((MainActivity) mActivity).getSessionManager();
+        }
     }
 
     private void initPlayer() {
@@ -136,6 +152,40 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
             return;
         }
         mExoPlayer.setPlayWhenReady(false);
+    }
+
+    public void onCastClick(View view) {
+        loadRemoteMedia(0, true);
+    }
+
+    private void loadRemoteMedia(int position, boolean autoPlay) {
+        if (mCastSession == null) {
+            mCastSession = mSessionManager.getCurrentCastSession();
+        }
+        if (mCastSession != null) {
+            final RemoteMediaClient remoteMediaClient = mCastSession.getRemoteMediaClient();
+            if (remoteMediaClient == null) {
+                Timber.d("remoteMediaClient == null");
+                return;
+            }
+            remoteMediaClient.load(getMediaInfo(), autoPlay, position);
+        } else {
+            Timber.d("mCastSession == null");
+        }
+    }
+
+    private MediaInfo getMediaInfo() {
+        MediaMetadata movieMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
+        movieMetadata.putString(MediaMetadata.KEY_TITLE, "Test video");
+
+        MediaInfo mediaInfo = new MediaInfo.Builder(mUrl)
+                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+                .setContentType("videos/mp4")
+                .setStreamDuration(MediaInfo.UNKNOWN_DURATION)
+                .setMetadata(movieMetadata)
+                .build();
+
+        return mediaInfo;
     }
 
     private boolean isPlaying() {

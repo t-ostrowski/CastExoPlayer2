@@ -32,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TEST_URL = "http://techslides.com/demos/sample-videos/small.mp4";
 
-    private Button btnCast;
-
     private CastContext mCastContext;
     private SessionManager mSessionManager;
     private CastSession mCastSession;
@@ -65,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onSessionEnded(Session session, int i) {
             Timber.d("onSessionEnded");
-            finish();
         }
 
         @Override
@@ -103,15 +100,6 @@ public class MainActivity extends AppCompatActivity {
                     CustomPlayerFragment.newInstance(getVideoUrl());
             launchFragment(customPlayerFragment);
         }
-
-        btnCast = (Button) findViewById(R.id.btn_cast);
-
-        btnCast.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadRemoteMedia(1, true);
-            }
-        });
     }
 
     @Override
@@ -149,33 +137,11 @@ public class MainActivity extends AppCompatActivity {
         return TEST_URL;
     }
 
-    private void loadRemoteMedia(int position, boolean autoPlay) {
-        if (mCastSession == null) {
-            mCastSession = mSessionManager.getCurrentCastSession();
-        }
-        if (mCastSession != null) {
-            final RemoteMediaClient remoteMediaClient = mCastSession.getRemoteMediaClient();
-            if (remoteMediaClient == null) {
-                Timber.d("remoteMediaClient == null");
-                return;
-            }
-            remoteMediaClient.load(getMediaInfo(), autoPlay, position);
-        } else {
-            Timber.d("mCastSession == null");
-        }
+    public CastSession getCastSession() {
+        return mCastSession;
     }
 
-    private MediaInfo getMediaInfo() {
-        MediaMetadata movieMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
-        movieMetadata.putString(MediaMetadata.KEY_TITLE, "Test video");
-
-        MediaInfo mediaInfo = new MediaInfo.Builder(getVideoUrl())
-                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
-                .setContentType("videos/mp4")
-                .setStreamDuration(MediaInfo.UNKNOWN_DURATION)
-                .setMetadata(movieMetadata)
-                .build();
-
-        return mediaInfo;
+    public SessionManager getSessionManager() {
+        return mSessionManager;
     }
 }
