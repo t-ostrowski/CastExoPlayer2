@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ostro.castexoplayer2">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-sdk
+        android:maxSdkVersion="24" />
+
+    <application
+        android:name="com.ostro.castexoplayer2.ExoPlayerApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat">
+
+        <activity
+            android:name="com.ostro.castexoplayer2.ui.MainActivity"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="com.ostro.castexoplayer2.cast.CastOptionsProvider" />
+
+        <!--<activity-->
+            <!--android:name="com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity"-->
+            <!--android:label="@string/app_name"-->
+            <!--android:launchMode="singleTask"-->
+            <!--android:parentActivityName=".ui.MainActivity"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/Theme.AppCompat">-->
+            <!--<meta-data-->
+                <!--android:name="android.support.PARENT_ACTIVITY"-->
+                <!--android:value=".ui.MainActivity" />-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
+
+        <!--<receiver android:name="com.google.android.libraries.cast.companionlibrary.remotecontrol.VideoIntentReceiver" />-->
+
+        <!--<service-->
+            <!--android:name="com.google.android.libraries.cast.companionlibrary.notification.VideoCastNotificationService" />-->
+
+        <!--<service-->
+            <!--android:name="com.google.android.libraries.cast.companionlibrary.cast.reconnection.ReconnectionService" />-->
+
+        <!--<meta-data-->
+            <!--android:name="com.google.android.gms.version"-->
+            <!--android:value="@integer/google_play_services_version" />-->
+    </application>
+
+</manifest>
