@@ -31,6 +31,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.cast.MediaStatus;
 import com.google.android.gms.cast.framework.CastSession;
 import com.google.android.gms.cast.framework.SessionManager;
 import com.google.android.gms.cast.framework.media.RemoteMediaClient;
@@ -72,7 +73,7 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
         mSimpleExoPlayerView.setPlayer(mExoPlayer);
         preparePlayer();
 
-        updateCastSesssionAndSessionManager();
+        updateCastSessionAndSessionManager();
     }
 
     private void initPlayer() {
@@ -151,7 +152,7 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
         mExoPlayer.setPlayWhenReady(false);
     }
 
-    private void updateCastSesssionAndSessionManager() {
+    private void updateCastSessionAndSessionManager() {
         if (mActivity instanceof MainActivity) {
             mCastSession = ((MainActivity) mActivity).getCastSession();
             mSessionManager = ((MainActivity) mActivity).getSessionManager();
@@ -164,16 +165,46 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
             Timber.d("remoteMediaClient == null");
             return;
         }
+        remoteMediaClient.addListener(new RemoteMediaClient.Listener() {
+            @Override
+            public void onStatusUpdated() {
+                Timber.d("onStatusUpdated");
+                if (remoteMediaClient.getMediaStatus().getPlayerState() == MediaStatus.PLAYER_STATE_IDLE) {
+//                    mSimpleExoPlayerView.setUseController(true);
+                }
+            }
+
+            @Override
+            public void onMetadataUpdated() {
+                Timber.d("onMetadataUpdated");
+            }
+
+            @Override
+            public void onQueueStatusUpdated() {
+                Timber.d("onQueueStatusUpdated");
+            }
+
+            @Override
+            public void onPreloadStatusUpdated() {
+                Timber.d("onPreloadStatusUpdated");
+            }
+
+            @Override
+            public void onSendingRemoteMediaRequest() {
+                Timber.d("onSendingRemoteMediaRequest");
+            }
+        });
         remoteMediaClient.load(getMediaInfo(), autoPlay, position);
     }
 
     private void loadMedia(int position, boolean autoPlay) {
-        updateCastSesssionAndSessionManager();
+        updateCastSessionAndSessionManager();
 
         if (mCastSession == null) {
             mCastSession = mSessionManager.getCurrentCastSession();
         }
         if (mCastSession != null) {
+//            mSimpleExoPlayerView.setUseController(false);
             mExoPlayer.setPlayWhenReady(false);
             loadRemoteMedia(position, autoPlay);
         } else {
@@ -235,6 +266,7 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
         } else if (playbackState == ExoPlayer.STATE_ENDED) {
             mExoPlayer.seekToDefaultPosition();
             mExoPlayer.setPlayWhenReady(false);
+            mSimpleExoPlayerView.setUseController(true);
         }
     }
 
