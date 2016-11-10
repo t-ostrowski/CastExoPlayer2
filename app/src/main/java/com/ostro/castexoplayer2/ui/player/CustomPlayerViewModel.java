@@ -164,7 +164,7 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
 
     private void loadRemoteMedia(int position, boolean autoPlay) {
         updateCastSesssionAndSessionManager();
-        
+
         if (mCastSession == null) {
             mCastSession = mSessionManager.getCurrentCastSession();
         }

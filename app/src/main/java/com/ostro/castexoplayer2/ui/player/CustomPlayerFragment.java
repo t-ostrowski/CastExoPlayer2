@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-import com.google.android.gms.cast.framework.CastSession;
 import com.ostro.castexoplayer2.R;
 import com.ostro.castexoplayer2.databinding.FragmentPlayerBinding;
 
