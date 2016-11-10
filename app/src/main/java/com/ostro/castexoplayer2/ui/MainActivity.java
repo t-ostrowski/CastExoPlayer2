@@ -153,12 +153,16 @@ public class MainActivity extends AppCompatActivity {
         if (mCastSession == null) {
             mCastSession = mSessionManager.getCurrentCastSession();
         }
-        final RemoteMediaClient remoteMediaClient = mCastSession.getRemoteMediaClient();
-        if (remoteMediaClient == null) {
-            Timber.d("remoteMediaClient == null");
-            return;
+        if (mCastSession != null) {
+            final RemoteMediaClient remoteMediaClient = mCastSession.getRemoteMediaClient();
+            if (remoteMediaClient == null) {
+                Timber.d("remoteMediaClient == null");
+                return;
+            }
+            remoteMediaClient.load(getMediaInfo(), autoPlay, position);
+        } else {
+            Timber.d("mCastSession == null");
         }
-        remoteMediaClient.load(getMediaInfo(), autoPlay, position);
     }
 
     private MediaInfo getMediaInfo() {
