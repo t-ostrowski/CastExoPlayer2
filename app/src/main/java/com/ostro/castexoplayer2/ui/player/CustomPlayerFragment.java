@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.ostro.castexoplayer2.R;
@@ -22,8 +21,6 @@ public class CustomPlayerFragment extends Fragment {
 
     private CustomPlayerViewModel mCustomPlayerViewModel;
     private SimpleExoPlayerView mSimpleExoPlayerView;
-
-    private Button btnCast;
 
     public static CustomPlayerFragment newInstance(String videoUrl) {
         CustomPlayerFragment customPlayerFragment = new CustomPlayerFragment();
@@ -44,7 +41,6 @@ public class CustomPlayerFragment extends Fragment {
         mCustomPlayerViewModel = new CustomPlayerViewModel(getActivity());
         binding.setPlayerVm(mCustomPlayerViewModel);
         mSimpleExoPlayerView = binding.videoView;
-        btnCast = binding.btnCast;
         return view;
     }
 

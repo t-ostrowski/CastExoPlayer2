@@ -50,7 +50,7 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
     private Activity mActivity;
     private String mUrl;
     private boolean loadingComplete = false;
-    private boolean shouldAutoPlay = true;
+    private static final boolean SHOULD_AUTO_PLAY = false;
     private ObservableBoolean controlsVisible = new ObservableBoolean(true);
     private boolean mPausable = true;
 
@@ -107,7 +107,7 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
         // Prepare the player with the source.
         mExoPlayer.prepare(videoSource);
         mExoPlayer.addListener(this);
-        mExoPlayer.setPlayWhenReady(shouldAutoPlay);
+        mExoPlayer.setPlayWhenReady(SHOULD_AUTO_PLAY);
     }
 
     public void onPlayerClicked(final View view) {
@@ -158,25 +158,26 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
         }
     }
 
-    public void onCastClick(View view) {
-        loadRemoteMedia(0, true);
+    private void loadRemoteMedia(int position, boolean autoPlay) {
+        final RemoteMediaClient remoteMediaClient = mCastSession.getRemoteMediaClient();
+        if (remoteMediaClient == null) {
+            Timber.d("remoteMediaClient == null");
+            return;
+        }
+        remoteMediaClient.load(getMediaInfo(), autoPlay, position);
     }
 
-    private void loadRemoteMedia(int position, boolean autoPlay) {
+    private void loadMedia(int position, boolean autoPlay) {
         updateCastSesssionAndSessionManager();
 
         if (mCastSession == null) {
             mCastSession = mSessionManager.getCurrentCastSession();
         }
         if (mCastSession != null) {
-            final RemoteMediaClient remoteMediaClient = mCastSession.getRemoteMediaClient();
-            if (remoteMediaClient == null) {
-                Timber.d("remoteMediaClient == null");
-                return;
-            }
-            remoteMediaClient.load(getMediaInfo(), autoPlay, position);
+            mExoPlayer.setPlayWhenReady(false);
+            loadRemoteMedia(position, autoPlay);
         } else {
-            Timber.d("mCastSession == null");
+            mExoPlayer.setPlayWhenReady(true);
         }
     }
 
@@ -229,20 +230,12 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-//        if (playWhenReady) {
-//            MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
-//
-//            mediaMetadata.putString(MediaMetadata.KEY_TITLE, "Test");
-//
-//            MediaInfo mediaInfo = new MediaInfo.Builder(mUrl)
-//                    .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
-//                    .setContentType("videos/mp4")
-//                    .setMetadata(mediaMetadata)
-//                    .build();
-//
-//            RemoteMediaClient remoteMediaClient = mCastSession.getRemoteMediaClient();
-//            remoteMediaClient.load(mediaInfo, shouldAutoPlay, 0);
-//        }
+        if (playbackState == ExoPlayer.STATE_READY && playWhenReady) {
+            loadMedia(0, true);
+        } else if (playbackState == ExoPlayer.STATE_ENDED) {
+            mExoPlayer.seekToDefaultPosition();
+            mExoPlayer.setPlayWhenReady(false);
+        }
     }
 
     @Override
