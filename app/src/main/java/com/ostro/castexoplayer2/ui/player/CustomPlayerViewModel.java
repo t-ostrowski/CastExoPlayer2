@@ -170,11 +170,17 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
             @Override
             public void onStatusUpdated() {
                 Timber.d("onStatusUpdated");
-                if (remoteMediaClient.getMediaStatus().getPlayerState() == MediaStatus.PLAYER_STATE_PLAYING ||
-                        remoteMediaClient.getMediaStatus().getPlayerState() == MediaStatus.PLAYER_STATE_BUFFERING) {
-                    mSimpleExoPlayerView.setUseController(false);
-                } else {
-                    mSimpleExoPlayerView.setUseController(true);
+                if (remoteMediaClient.getMediaStatus() != null) {
+                    if (remoteMediaClient.getMediaStatus().getPlayerState() == MediaStatus.PLAYER_STATE_PLAYING ||
+                            remoteMediaClient.getMediaStatus().getPlayerState() == MediaStatus.PLAYER_STATE_BUFFERING) {
+                        mSimpleExoPlayerView.setUseController(false);
+                    } else {
+                        mSimpleExoPlayerView.setUseController(true);
+                    }
+                    if (remoteMediaClient.getMediaStatus().getIdleReason() == MediaStatus.IDLE_REASON_FINISHED) {
+                        mExoPlayer.seekToDefaultPosition();
+                        mExoPlayer.setPlayWhenReady(false);
+                    }
                 }
             }
 

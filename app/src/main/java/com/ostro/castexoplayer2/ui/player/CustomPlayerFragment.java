@@ -75,6 +75,14 @@ public class CustomPlayerFragment extends Fragment {
     @Subscribe
     public void onCastSessionStartedEvent(CastSessionStartedEvent event) {
         Timber.d("onCastSessionStartedEvent");
+        ExoPlayer mExoPlayer = mCustomPlayerViewModel.getExoPlayer();
+        if (mExoPlayer != null) {
+            long currentPosition = mExoPlayer.getCurrentPosition();
+            if (currentPosition > 0) {
+                int position = (int) currentPosition;
+                mCustomPlayerViewModel.loadMedia(position, true);
+            }
+        }
     }
 
     @Subscribe

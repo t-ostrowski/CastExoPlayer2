@@ -29,7 +29,7 @@ import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TEST_URL = "http://techslides.com/demos/sample-videos/small.mp4";
+    private static final String TEST_URL = "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4";
 
     private CastContext mCastContext;
     private SessionManager mSessionManager;
