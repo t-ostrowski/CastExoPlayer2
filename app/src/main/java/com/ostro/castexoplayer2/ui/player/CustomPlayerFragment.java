@@ -71,11 +71,11 @@ public class CustomPlayerFragment extends Fragment {
 
     @Subscribe
     public void onCastSessionEndedEvent(CastSessionEndedEvent event) {
-        ExoPlayer exoPlayer = mCustomPlayerViewModel.getExoPlayer();
-        if (exoPlayer != null) {
-            long time = exoPlayer.getDuration() - event.getSessionRemainingTime();
-            exoPlayer.seekTo(time);
-            exoPlayer.setPlayWhenReady(true);
+        ExoPlayer mExoPlayer = mCustomPlayerViewModel.getExoPlayer();
+        if (mExoPlayer != null) {
+            long time = mExoPlayer.getDuration() - event.getSessionRemainingTime();
+            mExoPlayer.seekTo(time);
+            mExoPlayer.setPlayWhenReady(true);
         }
     }
 

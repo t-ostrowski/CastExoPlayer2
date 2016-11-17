@@ -169,8 +169,10 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
             @Override
             public void onStatusUpdated() {
                 Timber.d("onStatusUpdated");
-                if (remoteMediaClient.getMediaStatus().getPlayerState() == MediaStatus.PLAYER_STATE_IDLE) {
-//                    mSimpleExoPlayerView.setUseController(true);
+                if (remoteMediaClient.getMediaStatus().getPlayerState() == MediaStatus.PLAYER_STATE_PLAYING) {
+                    mSimpleExoPlayerView.setUseController(false);
+                } else {
+                    mSimpleExoPlayerView.setUseController(true);
                 }
             }
 
@@ -243,10 +245,6 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
         return mExoPlayer;
     }
 
-    public void setExoPlayer(SimpleExoPlayer mExoPlayer) {
-        this.mExoPlayer = mExoPlayer;
-    }
-
     @Bindable
     public boolean getLoadingComplete() {
         return loadingComplete;
@@ -274,7 +272,6 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
         } else if (playbackState == ExoPlayer.STATE_ENDED) {
             mExoPlayer.seekToDefaultPosition();
             mExoPlayer.setPlayWhenReady(false);
-            mSimpleExoPlayerView.setUseController(true);
         }
     }
 
