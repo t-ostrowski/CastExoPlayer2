@@ -8,9 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.ostro.castexoplayer2.R;
 import com.ostro.castexoplayer2.databinding.FragmentPlayerBinding;
+import com.ostro.castexoplayer2.event.CastSessionEndedEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 /**
  * Created by Thomas Ostrowski
@@ -48,6 +53,30 @@ public class CustomPlayerFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mCustomPlayerViewModel.onStart(mSimpleExoPlayerView, getUrlExtra());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Subscribe
+    public void onCastSessionEndedEvent(CastSessionEndedEvent event) {
+        ExoPlayer exoPlayer = mCustomPlayerViewModel.getExoPlayer();
+        if (exoPlayer != null) {
+            long time = exoPlayer.getDuration() - event.getSessionRemainingTime();
+            exoPlayer.seekTo(time);
+            exoPlayer.setPlayWhenReady(true);
+        }
     }
 
     @Nullable

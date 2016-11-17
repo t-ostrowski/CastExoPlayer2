@@ -239,6 +239,14 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
 //        notifyPropertyChanged(BR.pausable);
     }
 
+    public SimpleExoPlayer getExoPlayer() {
+        return mExoPlayer;
+    }
+
+    public void setExoPlayer(SimpleExoPlayer mExoPlayer) {
+        this.mExoPlayer = mExoPlayer;
+    }
+
     @Bindable
     public boolean getLoadingComplete() {
         return loadingComplete;

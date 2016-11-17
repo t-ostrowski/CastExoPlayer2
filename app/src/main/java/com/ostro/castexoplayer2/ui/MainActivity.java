@@ -14,7 +14,10 @@ import com.google.android.gms.cast.framework.Session;
 import com.google.android.gms.cast.framework.SessionManager;
 import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.ostro.castexoplayer2.R;
+import com.ostro.castexoplayer2.event.CastSessionEndedEvent;
 import com.ostro.castexoplayer2.ui.player.CustomPlayerFragment;
+
+import org.greenrobot.eventbus.EventBus;
 
 import timber.log.Timber;
 
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onSessionEnding(Session session) {
             Timber.d("onSessionEnding");
+            EventBus.getDefault().post(new CastSessionEndedEvent(session.getSessionRemainingTimeMs()));
         }
 
         @Override
