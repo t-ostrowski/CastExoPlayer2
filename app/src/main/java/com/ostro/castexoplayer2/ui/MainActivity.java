@@ -15,6 +15,7 @@ import com.google.android.gms.cast.framework.SessionManager;
 import com.google.android.gms.cast.framework.SessionManagerListener;
 import com.ostro.castexoplayer2.R;
 import com.ostro.castexoplayer2.event.CastSessionEndedEvent;
+import com.ostro.castexoplayer2.event.CastSessionStartedEvent;
 import com.ostro.castexoplayer2.ui.player.CustomPlayerFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         public void onSessionStarted(Session session, String s) {
             Timber.d("onSessionStarted");
             invalidateOptionsMenu();
+            EventBus.getDefault().post(new CastSessionStartedEvent());
         }
 
         @Override

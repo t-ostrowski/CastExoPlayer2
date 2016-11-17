@@ -13,9 +13,12 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.ostro.castexoplayer2.R;
 import com.ostro.castexoplayer2.databinding.FragmentPlayerBinding;
 import com.ostro.castexoplayer2.event.CastSessionEndedEvent;
+import com.ostro.castexoplayer2.event.CastSessionStartedEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import timber.log.Timber;
 
 /**
  * Created by Thomas Ostrowski
@@ -70,14 +73,21 @@ public class CustomPlayerFragment extends Fragment {
     }
 
     @Subscribe
+    public void onCastSessionStartedEvent(CastSessionStartedEvent event) {
+        Timber.d("onCastSessionStartedEvent");
+    }
+
+    @Subscribe
     public void onCastSessionEndedEvent(CastSessionEndedEvent event) {
         ExoPlayer mExoPlayer = mCustomPlayerViewModel.getExoPlayer();
         SimpleExoPlayerView mSimpleExoPlayerView = mCustomPlayerViewModel.getSimpleExoPlayerView();
         if (mExoPlayer != null) {
             long time = mExoPlayer.getDuration() - event.getSessionRemainingTime();
-            mCustomPlayerViewModel.setIsInProgress(true);
-            mExoPlayer.seekTo(time);
-            mExoPlayer.setPlayWhenReady(true);
+            if (time > 0) {
+                mCustomPlayerViewModel.setIsInProgress(true);
+                mExoPlayer.seekTo(time);
+                mExoPlayer.setPlayWhenReady(true);
+            }
         }
         if (mSimpleExoPlayerView != null) {
             if (!mSimpleExoPlayerView.getUseController()) {
