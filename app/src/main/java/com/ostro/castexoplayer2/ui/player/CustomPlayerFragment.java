@@ -72,10 +72,17 @@ public class CustomPlayerFragment extends Fragment {
     @Subscribe
     public void onCastSessionEndedEvent(CastSessionEndedEvent event) {
         ExoPlayer mExoPlayer = mCustomPlayerViewModel.getExoPlayer();
+        SimpleExoPlayerView mSimpleExoPlayerView = mCustomPlayerViewModel.getSimpleExoPlayerView();
         if (mExoPlayer != null) {
             long time = mExoPlayer.getDuration() - event.getSessionRemainingTime();
+            mCustomPlayerViewModel.setIsInProgress(true);
             mExoPlayer.seekTo(time);
             mExoPlayer.setPlayWhenReady(true);
+        }
+        if (mSimpleExoPlayerView != null) {
+            if (!mSimpleExoPlayerView.getUseController()) {
+                mSimpleExoPlayerView.setUseController(true);
+            }
         }
     }
 

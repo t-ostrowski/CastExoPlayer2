@@ -54,6 +54,7 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
     private static final boolean SHOULD_AUTO_PLAY = false;
     private ObservableBoolean controlsVisible = new ObservableBoolean(true);
     private boolean mPausable = true;
+    private boolean isInProgress = false;
 
     private CastSession mCastSession;
     private SessionManager mSessionManager;
@@ -245,6 +246,14 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
         return mExoPlayer;
     }
 
+    public SimpleExoPlayerView getSimpleExoPlayerView() {
+        return mSimpleExoPlayerView;
+    }
+
+    public void setIsInProgress(boolean isInProgress) {
+        this.isInProgress = isInProgress;
+    }
+
     @Bindable
     public boolean getLoadingComplete() {
         return loadingComplete;
@@ -267,11 +276,12 @@ public class CustomPlayerViewModel extends BaseObservable implements ExoPlayer.E
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        if (playbackState == ExoPlayer.STATE_READY && playWhenReady) {
+        if (playbackState == ExoPlayer.STATE_READY && playWhenReady && !isInProgress) {
             loadMedia(0, true);
         } else if (playbackState == ExoPlayer.STATE_ENDED) {
             mExoPlayer.seekToDefaultPosition();
             mExoPlayer.setPlayWhenReady(false);
+            isInProgress = false;
         }
     }
 
